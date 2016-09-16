@@ -16,31 +16,9 @@ Cordova Install Note:
 
 cordova plugin add https://github.com/brannpark/Cordova-Kakaotalk-Plugin.git --variable KAKAO_APP_KEY=YOUR_KAKAO_APP_KEY
 
-[Android]
-* nothing to do ;-)
-* But the Android app must register key hash(https://developers.kakao.com/docs/android#getting-started-launch-sample-app)
+* Android : must register key hash(https://developers.kakao.com/docs/android#getting-started-launch-sample-app)
+* iOS : nothing to do.
 
-[iOS]
-* Add following code to appDelegate
-
-```
-#import <KakaoOpenSDK/KakaoOpenSDK.h>
-
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
-                                       sourceApplication:(NSString *)sourceApplication
-                                              annotation:(id)annotation {
-    ...
-    if ([KOSession isKakaoAccountLoginCallback:url]){return [KOSession handleOpenURL:url];}
-    ...
-}
-
-- (void)applicationDidBecomeActive:(UIApplication *)application{[KOSession handleDidBecomeActive];}
-```
-
-* Ohter Linker Flags 
-
-open platforms/ios/*.xcodeproj
-        Build Settings > Linking > Other Linker Flags > add '-all_load'
 
 How to use the plugin
 ========================
