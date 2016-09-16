@@ -4,6 +4,30 @@
 
 @implementation KakaoTalk
 
+- (void)pluginInitialize {
+  [[NSNotificationCenter defaultCenter] addObserver: self
+					selector: @selector(applicationDidBecomeActive:)
+					name: UIApplicationDidBecomeActiveNotification
+					object: nil];
+}
+
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+  [KOSession handleDidBecomeActive];
+}
+
+
+- (void)handleOpenURL:(NSNotification*)notification {
+  NSURL *url = [notification object];
+  if ([url isKindOfClass:[NSURL class]]) {
+    /* Do your thing! */
+    if ([KOSession isKakaoAccountLoginCallback:url]) {
+      [KOSession handleOpenURL:url];
+    }
+  }
+}
+
+
 - (void) login:(CDVInvokedUrlCommand*) command
 {
     [[KOSession sharedSession] close];
@@ -142,4 +166,3 @@
 }
 
 @end
-

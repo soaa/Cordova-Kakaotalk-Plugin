@@ -14,7 +14,7 @@ Make sure you've registered your Facebook app with Kakao and have an KAKAO_APP_K
 Cordova Install Note:
 ========================
 
-cordova plugin add https://github.com/taejaehan/cordova-kakaotalk.git --variable KAKAO_APP_KEY=YOUR_KAKAO_APP_KEY
+cordova plugin add https://github.com/brannpark/Cordova-Kakaotalk-Plugin.git --variable KAKAO_APP_KEY=YOUR_KAKAO_APP_KEY
 
 [Android]
 * nothing to do ;-)

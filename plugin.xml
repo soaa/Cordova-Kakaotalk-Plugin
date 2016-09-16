@@ -20,6 +20,7 @@
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="KakaoTalk">
                 <param name="android-package" value="com.htj.plugin.kakao.KakaoTalk" />
+                <param name="onload" value="true" />
             </feature>
             <access origin="https://*.kakao.com" />
             <access origin="https://*.kakao.co.kr" />
@@ -58,6 +59,7 @@
         <config-file target="config.xml" parent="/*">
             <feature name="KakaoTalk">
                 <param name="ios-package" value="KakaoTalk" />
+		<param name="onload" value="true" />
             </feature>
         </config-file>
 
