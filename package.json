@@ -1,10 +1,10 @@
 {
-  "id": "cordova-plugin-htj-kakaotalk",
-  "name": "cordova-plugin-htj-kakaotalk",
-  "version": "1.0.0",
+  "id": "cordova-plugin-brannpark-kakaotalk",
+  "name": "cordova-plugin-brannpark-kakaotalk",
+  "version": "1.1.0",
   "description": "Cordova KakaoTalk Plugin",
   "cordova": {
-    "id": "cordova-plugin-htj-kakaotalk",
+    "id": "cordova-plugin-brannpark-kakaotalk",
     "platforms": [
       "android",
       "ios"
@@ -22,6 +22,6 @@
     "cordova-android",
     "cordova-ios"
   ],
-  "author": "TaeJae Han",
+  "author": "Brann Park",
   "license": "MIT"
 }
