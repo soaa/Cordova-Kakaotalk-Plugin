@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
-	id="cordova-plugin-htj-kakaotalk"
-	name="cordova-plugin-htj-kakaotalk"
+	id="cordova-plugin-brannpark-kakaotalk"
+	name="cordova-plugin-brannpark-kakaotalk"
 	version="1.0.0">
 
   <name>KakaoTalk</name>
