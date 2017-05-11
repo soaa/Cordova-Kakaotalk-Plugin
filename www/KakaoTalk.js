@@ -1,3 +1,4 @@
+cordova.define("cordova-plugin-brannpark-kakaotalk.KakaoTalk", function(require, exports, module) {
 var exec = require('cordova/exec');
 
 var KakaoTalk = {
@@ -19,7 +20,12 @@ var KakaoTalk = {
 			}
 		};
 	    exec(successCallback, errorCallback, "KakaoTalk", "share", [options]);
+	},
+	link : function(options, successCallback, errorCallback) {
+	    exec(successCallback, errorCallback, "KakaoTalk", "link", [options]);
 	}
 };
 
 module.exports = KakaoTalk;
+
+});
