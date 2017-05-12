@@ -1,7 +1,5 @@
 /**
- * Copyright 2015 Kakao Corp.
- *
- * Redistribution and modification in source or binary forms are not permitted without specific prior written permission.
+ * Copyright 2015-2016 Kakao Corp.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,9 +50,21 @@
 
 /*!
  @property memberImageURLs
- @abstract 카카오톡 채팅방 멤버들의 썸네일 이미지 URL List. (최대 5개 까지)
+ @abstract (Deprecated) 카카오톡 채팅방 멤버들의 썸네일 이미지 URL List. (최대 5개 까지)
  */
-@property (nonatomic, readonly) NSArray *memberImageURLs;
+@property (nonatomic, readonly) NSArray *memberImageURLs DEPRECATED_MSG_ATTRIBUTE("Use 'displayMemberImages' property.");
+
+/*!
+ @property display_member_images
+ @abstract 이미지가 존재하는 카카오톡 채팅방 멤버들의 썸네일 이미지 URL List. (최대 5대 까지)
+ */
+@property (nonatomic, readonly) NSArray *displayMemberImages;
+
+/*!
+ @property chatType
+ @abstract 카카오톡 채팅방의 종류(오픈채팅(open), 일반채팅(regular)).
+ */
+@property (nonatomic, readonly) NSString *chatType;
 
 
 + (instancetype)responseWithDictionary:(NSDictionary *)dictionary;

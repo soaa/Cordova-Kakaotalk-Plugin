@@ -1,7 +1,5 @@
 /**
- * Copyright 2015 Kakao Corp.
- *
- * Redistribution and modification in source or binary forms are not permitted without specific prior written permission.
+ * Copyright 2015-2016 Kakao Corp.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +31,6 @@
 /*!
  @abstract 현재 로그인된 사용자에 대한 정보를 얻을 수 있습니다.
  @param completionHandler 사용자 정보를 얻어 처리하는 핸들러
- @discussion
  */
 + (instancetype)meTaskWithCompletionHandler:(KOSessionTaskCompletionHandler)completionHandler;
 
@@ -41,9 +38,26 @@
  @abstract 현재 로그인된 사용자에 대한 정보를 얻을 수 있습니다.
  @param secureResource 프로필, 썸네일 이미지 등의 리소스 정보들에 대해 https를 지원하는 형식으로 응답을 받을지의 여부. YES일 경우 https지원, NO일 경우 http지원.
  @param completionHandler 사용자 정보를 얻어 처리하는 핸들러
- @discussion
  */
 + (instancetype)meTaskWithSecureResource:(BOOL)secureResource
+                       completionHandler:(KOSessionTaskCompletionHandler)completionHandler;
+
+/*!
+ @abstract 현재 로그인된 사용자에 대한 정보를 얻을 수 있습니다.
+ @param propertyKeys 특정 프로퍼티를 지정하여 받고 싶을 경우 요청할 프로퍼티 키 이름 목록.
+ @param completionHandler 사용자 정보를 얻어 처리하는 핸들러
+ */
++ (instancetype)meTaskWithPropertyKeys:(NSArray<NSString *> *)propertyKeys
+                     completionHandler:(KOSessionTaskCompletionHandler)completionHandler;
+
+/*!
+ @abstract 현재 로그인된 사용자에 대한 정보를 얻을 수 있습니다.
+ @param secureResource 프로필, 썸네일 이미지 등의 리소스 정보들에 대해 https를 지원하는 형식으로 응답을 받을지의 여부. YES일 경우 https지원, NO일 경우 http지원.
+ @param propertyKeys 특정 프로퍼티를 지정하여 받고 싶을 경우 요청할 프로퍼티 키 이름 목록.
+ @param completionHandler 사용자 정보를 얻어 처리하는 핸들러
+ */
++ (instancetype)meTaskWithSecureResource:(BOOL)secureResource
+                            propertyKeys:(NSArray<NSString *> *)propertyKeys
                        completionHandler:(KOSessionTaskCompletionHandler)completionHandler;
 
 /*!

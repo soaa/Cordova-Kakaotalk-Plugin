@@ -83,15 +83,18 @@
         <string>kakaokompassauth</string>
         <string>storykompassauth</string>
         <string>kakaolink</string>
-        <string>kakaotalk-4.5.0</string>
+        <string>kakaotalk-5.9.7</string>
         <string>kakaostory-2.9.0</string>
       </array>
     </config-file>
     
     <framework src="QuartzCore.framework" />
     <framework src="src/ios/KakaoOpenSDK.framework" custom="true" />
-
-    <source-file src="src/ios/KakaoTalk.m" />
+    <framework src="src/ios/KakaoLink.framework" custom="true" />
+    <source-file src="src/ios/KakaoTalk.swift" />
     <header-file src="src/ios/KakaoTalk.h" />
+    <header-file src="src/ios/KakaoTalk-Bridging-Header.h" />
+
+    <dependency id="cordova-plugin-add-swift-support" version="1.6.1"/>
   </platform>
 </plugin>
