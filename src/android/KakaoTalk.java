@@ -136,7 +136,7 @@ public class KakaoTalk extends CordovaPlugin {
         final TemplateParams params;
 
         // TODO : 일단 Feed Template 만 지원
-        if("feed".equals(content.optString("objectType"))) {
+        if("feed".equals(parameters.optString("objectType"))) {
             FeedTemplate.Builder paramsBuilder = FeedTemplate.newBuilder(contentObject);
 
             // button 설정 부분은 javascript sdk 설명대로 구현한다.
