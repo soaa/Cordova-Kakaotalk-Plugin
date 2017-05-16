@@ -155,7 +155,7 @@ public class KakaoTalk extends CordovaPlugin {
             params = paramsBuilder.build();
 
         } else {
-            throw new KakaoParameterException("Unsupported object type : " + content.optString("objectType"));
+            throw new KakaoParameterException("Unsupported object type : " + parameters.optString("objectType"));
         }
 
         final Activity activity = cordova.getActivity();
