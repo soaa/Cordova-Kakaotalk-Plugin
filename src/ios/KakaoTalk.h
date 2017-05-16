@@ -2,3 +2,4 @@
 #import <KakaoOpenSDK/KakaoOpenSDK.h>
 #import <KakaoLink/KakaoLink.h>
 
+#import "AppDelegate.h"

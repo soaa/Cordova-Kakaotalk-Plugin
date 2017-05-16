@@ -4,6 +4,7 @@ import UIKit
     
     override func pluginInitialize() {
         NotificationCenter.default.addObserver(self, selector: #selector(KakaoTalk.applicationDidBecomeActive), name: Notification.Name.UIApplicationDidBecomeActive, object: nil)
+        AppDelegate.classInit
     }
     
     func applicationDidBecomeActive(application: UIApplication) {
@@ -207,3 +208,41 @@ import UIKit
     }
 }
 
+//MARK: extension KakaoTalk
+extension AppDelegate {
+    
+    static let classInit : () = {
+        let swizzle = { (cls: AnyClass, originalSelector: Selector, swizzledSelector: Selector) in
+            let originalMethod = class_getInstanceMethod(cls, originalSelector)
+            let swizzledMethod = class_getInstanceMethod(cls, swizzledSelector)
+            
+            let didAddMethod = class_addMethod(cls, originalSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod))
+            
+            if didAddMethod {
+                class_replaceMethod(cls, swizzledSelector, method_getImplementation(originalMethod), method_getTypeEncoding(originalMethod))
+            } else {
+                method_exchangeImplementations(originalMethod, swizzledMethod);
+            }
+        }
+        swizzle(AppDelegate.self, #selector(UIApplicationDelegate.application(_:open:sourceApplication:annotation:)), #selector(AppDelegate.kkSwizzledApplication(_:open:sourceApplication:annotation:)))
+    }()
+    
+    
+    open func kkSwizzledApplication(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) {
+        self.handleURL(url)
+        self.kkSwizzledApplication(application, open: url, sourceApplication: sourceApplication, annotation: annotation)
+    }
+    
+    open override func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+        return self.handleURL(url)
+    }
+    
+    func handleURL(_ url: URL) -> Bool {
+        if (KOSession.isKakaoAccountLoginCallback(url)) {
+            NSLog("KOhandling url: \(url.absoluteString)")
+            return KOSession.handleOpen(url)
+        }
+        
+        return false
+    }
+}
