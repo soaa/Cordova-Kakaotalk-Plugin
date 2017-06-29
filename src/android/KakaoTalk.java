@@ -180,7 +180,7 @@ public class KakaoTalk extends CordovaPlugin {
     private LinkObject parseLinkObject(JSONObject jobj) {
         return LinkObject.newBuilder()
                 .setWebUrl(jobj.optString("webUrl", null))
-                .setMobileWebUrl(jobj.optString("mobileWebUrl", null))
+                .setMobileWebUrl(jobj.optString("mobileWebUrl", jobj.optString("webUrl", null)))
                 .setAndroidExecutionParams(jobj.optString("androidExecParams", null))
                 .setIosExecutionParams(jobj.optString("iosExecParams", null))
                 .build();
