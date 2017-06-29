@@ -202,7 +202,9 @@ import UIKit
     
     private func buildLink(linkBuilder: KLKLinkBuilder, link: Dictionary<String, AnyObject>) {
         linkBuilder.webURL = link["webUrl"].flatMap { url in URL(string: url as! String) }
-        linkBuilder.mobileWebURL = link["mobileWebUrl"].flatMap { url in URL(string: url as! String) }
+        if (link["mobileWebUrl"] != nil) {
+            linkBuilder.mobileWebURL = link["mobileWebUrl"].flatMap { url in URL(string: url as! String) }
+        }
         linkBuilder.androidExecutionParams = link["androidExecParams"] as? String
         linkBuilder.iosExecutionParams = link["iosExecParams"] as? String
     }
