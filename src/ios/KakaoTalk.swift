@@ -4,7 +4,7 @@ import UIKit
     
     override func pluginInitialize() {
         NotificationCenter.default.addObserver(self, selector: #selector(KakaoTalk.applicationDidBecomeActive), name: Notification.Name.UIApplicationDidBecomeActive, object: nil)
-        AppDelegate.classInit
+        AppDelegate.kakaoPluginClassInit
     }
     
     func applicationDidBecomeActive(application: UIApplication) {
@@ -213,7 +213,7 @@ import UIKit
 //MARK: extension KakaoTalk
 extension AppDelegate {
     
-    static let classInit : () = {
+    static let kakaoPluginClassInit : () = {
         let swizzle = { (cls: AnyClass, originalSelector: Selector, swizzledSelector: Selector) in
             let originalMethod = class_getInstanceMethod(cls, originalSelector)
             let swizzledMethod = class_getInstanceMethod(cls, swizzledSelector)
@@ -227,19 +227,28 @@ extension AppDelegate {
             }
         }
         swizzle(AppDelegate.self, #selector(UIApplicationDelegate.application(_:open:sourceApplication:annotation:)), #selector(AppDelegate.kkSwizzledApplication(_:open:sourceApplication:annotation:)))
+        
+        if #available(iOS 9.0, *) {
+            swizzle(AppDelegate.self, #selector(UIApplicationDelegate.application(_:open:options:)), #selector(AppDelegate.kkSwizzledApplication_options(_:open:options:)))
+        }
     }()
     
     
     open func kkSwizzledApplication(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) {
-        self.handleURL(url)
+        self.handleKakaoURL(url)
         self.kkSwizzledApplication(application, open: url, sourceApplication: sourceApplication, annotation: annotation)
     }
     
-    open override func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
-        return self.handleURL(url)
+    open func kkSwizzledApplication_options(_ application: UIApplication, open url: URL, options: [String: Any]) {
+        self.handleKakaoURL(url)
+        self.kkSwizzledApplication_options(application, open: url, options: options)
     }
     
-    func handleURL(_ url: URL) -> Bool {
+    open override func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+        return self.handleKakaoURL(url)
+    }
+    
+    func handleKakaoURL(_ url: URL) -> Bool {
         if (KOSession.isKakaoAccountLoginCallback(url)) {
             NSLog("KOhandling url: \(url.absoluteString)")
             return KOSession.handleOpen(url)
