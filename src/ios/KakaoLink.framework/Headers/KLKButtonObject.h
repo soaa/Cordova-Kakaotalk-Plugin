@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#import "KLKParamObject.h"
+#import <KakaoLink/KLKParamObject.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface KLKButtonObject (Creation)
+@interface KLKButtonObject (Constructor)
 
 + (instancetype)buttonObjectWithTitle:(NSString *)title link:(KLKLinkObject *)link;
 - (instancetype)initWithTitle:(NSString *)title link:(KLKLinkObject *)link;
@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface KLKButtonObject (CreationWithBuilder)
+@interface KLKButtonObject (ConstructorWithBuilder)
 
 + (instancetype)buttonObjectWithBuilderBlock:(void (^)(KLKButtonBuilder *buttonBuilder))builderBlock;
 + (instancetype)buttonObjectWithBuilder:(KLKButtonBuilder *)builder;

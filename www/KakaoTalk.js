@@ -22,7 +22,13 @@ var KakaoTalk = {
 	},
 	link : function(options, successCallback, errorCallback) {
 	    exec(successCallback, errorCallback, "KakaoTalk", "link", [options]);
-	}
+	},
+  shareViaStory : function(options, successCallback, errorCallback) {
+    exec(successCallback, errorCallback, "KakaoTalk", "shareViaStory", [options]);
+  },
+	canShareViaStory : function(successCallback, errorCallback) {
+	  exec(successCallback, errorCallback, "KakaoTalk", "canShareViaStory", []);
+  }
 };
 
 module.exports = KakaoTalk;

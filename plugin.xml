@@ -83,6 +83,7 @@
         <string>kakaokompassauth</string>
         <string>storykompassauth</string>
         <string>kakaolink</string>
+	<string>storylink</string>
         <string>kakaotalk-5.9.7</string>
         <string>kakaostory-2.9.0</string>
       </array>
@@ -91,6 +92,7 @@
     <framework src="QuartzCore.framework" />
     <framework src="src/ios/KakaoOpenSDK.framework" custom="true" />
     <framework src="src/ios/KakaoLink.framework" custom="true" />
+    <framework src="src/ios/KakaoCommon.framework" custom="true" />
     <source-file src="src/ios/KakaoTalk.swift" />
     <header-file src="src/ios/KakaoTalk.h" />
     <header-file src="src/ios/KakaoTalk-Bridging-Header.h" />

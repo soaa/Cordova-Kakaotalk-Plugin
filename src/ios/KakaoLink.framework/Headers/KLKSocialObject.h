@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#import "KLKParamObject.h"
+#import <KakaoLink/KLKParamObject.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -69,7 +69,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface KLKSocialObject (CreationWithBuilder)
+@interface KLKSocialObject (ConstructorWithBuilder)
 
 + (instancetype)socialObjectWithBuilderBlock:(void (^)(KLKSocialBuilder *socialBuilder))builderBlock;
 + (instancetype)socialObjectWithBuilder:(KLKSocialBuilder *)builder;

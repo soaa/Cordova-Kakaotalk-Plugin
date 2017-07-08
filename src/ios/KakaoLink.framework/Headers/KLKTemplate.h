@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-#import "KLKParamObject.h"
-
-@class KLKButtonBuilder;
+#import <KakaoLink/KLKParamObject.h>
 
 @interface KLKTemplate : KLKParamObject
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#import "KLKTemplate.h"
+#import <KakaoLink/KLKTemplate.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -68,7 +68,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface KLKLocationTemplate (Creation)
+@interface KLKLocationTemplate (Constructor)
 
 + (instancetype)locationTemplateWithAddress:(NSString *)address content:(KLKContentObject *)content;
 - (instancetype)initWithAddress:(NSString *)address content:(KLKContentObject *)content;
@@ -89,7 +89,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface KLKLocationTemplate (CreationWithBuilder)
+@interface KLKLocationTemplate (ConstructorWithBuilder)
 
 + (instancetype)locationTemplateWithBuilderBlock:(void (^)(KLKLocationTemplateBuilder *locationTemplateBuilder))builderBlock;
 + (instancetype)locationTemplateWithBuilder:(KLKLocationTemplateBuilder *)builder;

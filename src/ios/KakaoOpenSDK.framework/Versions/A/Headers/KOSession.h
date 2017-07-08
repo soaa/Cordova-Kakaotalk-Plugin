@@ -127,6 +127,11 @@ typedef NS_ENUM(NSInteger, KOAgeAuthProperty) {
  * @abstract 인증 상태
  */
 @property(nonatomic, readonly) KOSessionState state;
+/*!
+ * @property clientSecret
+ * @abstract 클라이언트 시크릿. AppDelegate의 application:didFinishLaunchingWithOptions: 메소드에서 값을 설정해주어야 한다.
+ */
+@property(nonatomic, copy) NSString *clientSecret;
 
 /*!
  * @property automaticPeriodicRefresh

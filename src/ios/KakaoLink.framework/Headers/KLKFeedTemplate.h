@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#import "KLKTemplate.h"
+#import <KakaoLink/KLKTemplate.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface KLKFeedTemplate (Creation)
+@interface KLKFeedTemplate (Constructor)
 
 + (instancetype)feedTemplateWithContent:(KLKContentObject *)content;
 - (instancetype)initWithContent:(KLKContentObject *)content;
@@ -75,7 +75,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface KLKFeedTemplate (CreationWithBuilder)
+@interface KLKFeedTemplate (ConstructorWithBuilder)
 
 + (instancetype)feedTemplateWithBuilderBlock:(void (^)(KLKFeedTemplateBuilder *feedTemplateBuilder))builderBlock;
 + (instancetype)feedTemplateWithBuilder:(KLKFeedTemplateBuilder *)builder;

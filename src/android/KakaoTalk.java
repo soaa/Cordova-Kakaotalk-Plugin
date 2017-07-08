@@ -107,6 +107,41 @@ public class KakaoTalk extends CordovaPlugin {
                 Log.e(LOG_TAG, ex.getMessage(), ex);
                 return false;
             }
+        }  else if (action.equals("canShareViaStory")) {
+          try {
+            Uri kakaoLinkTestUri = Uri.parse("storylink://posting");
+            Intent intent = new Intent(Intent.ACTION_SEND, kakaoLinkTestUri);
+            List<ResolveInfo> list = cordova.getActivity().getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+            callbackContext.success((list != null && !list.isEmpty()) ? 1 : 0);
+
+            return true;
+          } catch (Exception ex) {
+            Log.e(LOG_TAG, ex.getMessage(), ex);
+            callbackContext.error(ex.getMessage());
+            return false;
+          }
+        } else if (action.equals("shareViaStory")) {
+          try {
+            JSONObject params = options.getJSONObject(0);
+
+            if (params != null) {
+              Intent i = new Intent(Intent.ACTION_SEND);
+              i.setType("text/plain");
+              i.putExtra(Intent.EXTRA_SUBJECT, params.getString("text"));
+              i.putExtra(Intent.EXTRA_TEXT, params.getString("url"));
+
+              i.setPackage("com.kakao.story");
+              cordova.getActivity().startActivity(i);
+
+              callbackContext.success("success");
+            } else {
+              callbackContext.error("empty params");
+            }
+            return true;
+          } catch (Exception ex) {
+            callbackContext.error(ex.getMessage());
+            return false;
+          }
         }
         return false;
     }

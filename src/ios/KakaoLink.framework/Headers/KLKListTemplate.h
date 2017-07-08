@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#import "KLKTemplate.h"
+#import <KakaoLink/KLKTemplate.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -63,7 +63,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface KLKListTemplate (Creation)
+@interface KLKListTemplate (Constructor)
 
 + (instancetype)listTemplateWithHeaderTitle:(NSString *)headerTitle
                                  headerLink:(KLKLinkObject *)headerLink
@@ -88,7 +88,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface KLKListTemplate (CreationWithBuilder)
+@interface KLKListTemplate (ConstructorWithBuilder)
 
 + (instancetype)listTemplateWithBuilderBlock:(void (^)(KLKListTemplateBuilder *listTemplateBuilder))builderBlock;
 + (instancetype)listTemplateWithBuilder:(KLKListTemplateBuilder *)builder;
