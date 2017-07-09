@@ -3,6 +3,9 @@ package com.htj.plugin.kakao;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.util.Log;
 
 import com.kakao.auth.ApprovalType;
@@ -19,11 +22,11 @@ import com.kakao.kakaolink.KakaoLink;
 import com.kakao.kakaolink.KakaoTalkLinkMessageBuilder;
 import com.kakao.kakaolink.v2.KakaoLinkResponse;
 import com.kakao.kakaolink.v2.KakaoLinkService;
-import com.kakao.kakaolink.v2.model.ButtonObject;
-import com.kakao.kakaolink.v2.model.ContentObject;
-import com.kakao.kakaolink.v2.model.FeedTemplate;
-import com.kakao.kakaolink.v2.model.LinkObject;
-import com.kakao.kakaolink.v2.model.TemplateParams;
+import com.kakao.message.template.ButtonObject;
+import com.kakao.message.template.ContentObject;
+import com.kakao.message.template.FeedTemplate;
+import com.kakao.message.template.LinkObject;
+import com.kakao.message.template.TemplateParams;
 import com.kakao.network.ErrorResult;
 import com.kakao.network.callback.ResponseCallback;
 import com.kakao.usermgmt.UserManagement;
@@ -43,6 +46,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Iterator;
+import java.util.List;
 
 public class KakaoTalk extends CordovaPlugin {
 
