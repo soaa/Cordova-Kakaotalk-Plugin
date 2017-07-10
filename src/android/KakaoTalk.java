@@ -51,7 +51,6 @@ import java.util.List;
 public class KakaoTalk extends CordovaPlugin {
 
     private static final String LOG_TAG = "KakaoTalk";
-    private static volatile Activity currentActivity;
     private SessionCallback callback;
 
     /**
@@ -63,12 +62,6 @@ public class KakaoTalk extends CordovaPlugin {
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         Log.v(LOG_TAG, "kakao : initialize");
         super.initialize(cordova, webView);
-        currentActivity = this.cordova.getActivity();
-        try {
-            KakaoSDK.init(new KakaoSDKAdapter());
-        } catch (Exception e) {
-            Log.e("KakaoSDK", e.getMessage(), e);
-        }
     }
 
     /**
@@ -78,11 +71,17 @@ public class KakaoTalk extends CordovaPlugin {
      * @param options
      * @param callbackContext
      */
-    public boolean execute(final String action, JSONArray options, final CallbackContext callbackContext) throws JSONException {
+    public boolean execute(final String action, final JSONArray options, final CallbackContext callbackContext) throws JSONException {
         Log.v(LOG_TAG, "kakao : execute " + action);
-        cordova.setActivityResultCallback(this);
-        callback = new SessionCallback(callbackContext);
-        Session.getCurrentSession().addCallback(callback);
+
+        if (KakaoSDK.getAdapter() == null) {
+            try {
+                Log.v(LOG_TAG, "kakao exec " + action);
+                KakaoSDK.init(new KakaoSDKAdapter(cordova.getActivity().getApplication()));
+            } catch (Exception ex) {
+                Log.e(LOG_TAG, ex.getMessage(), ex);
+            }
+        }
 
         if (action.equals("login")) {
             this.login();
@@ -111,48 +110,59 @@ public class KakaoTalk extends CordovaPlugin {
                 Log.e(LOG_TAG, ex.getMessage(), ex);
                 return false;
             }
-        }  else if (action.equals("canShareViaStory")) {
-          try {
-            Uri kakaoLinkTestUri = Uri.parse("storylink://posting");
-            Intent intent = new Intent(Intent.ACTION_SEND, kakaoLinkTestUri);
-            List<ResolveInfo> list = cordova.getActivity().getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-            callbackContext.success((list != null && !list.isEmpty()) ? 1 : 0);
+        } else if (action.equals("canShareViaStory")) {
+            cordova.getThreadPool().execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Uri kakaoLinkTestUri = Uri.parse("storylink://posting");
+                        Intent intent = new Intent(Intent.ACTION_SEND, kakaoLinkTestUri);
+                        List<ResolveInfo> list = cordova.getActivity().getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+                        callbackContext.success((list != null && !list.isEmpty()) ? 1 : 0);
+
+                    } catch (Exception ex) {
+                        Log.e(LOG_TAG, ex.getMessage(), ex);
+                        callbackContext.error(ex.getMessage());
+                    }
+                }
+            });
 
             return true;
-          } catch (Exception ex) {
-            Log.e(LOG_TAG, ex.getMessage(), ex);
-            callbackContext.error(ex.getMessage());
-            return false;
-          }
         } else if (action.equals("shareViaStory")) {
-          try {
-            JSONObject params = options.getJSONObject(0);
+            cordova.getThreadPool().execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        JSONObject params = options.getJSONObject(0);
 
-            if (params != null) {
-              Intent i = new Intent(Intent.ACTION_SEND);
-              i.setType("text/plain");
-              i.putExtra(Intent.EXTRA_SUBJECT, params.getString("text"));
-              i.putExtra(Intent.EXTRA_TEXT, params.getString("url"));
+                        if (params != null) {
+                            Intent i = new Intent(Intent.ACTION_SEND);
+                            i.setType("text/plain");
+                            i.putExtra(Intent.EXTRA_SUBJECT, params.getString("text"));
+                            i.putExtra(Intent.EXTRA_TEXT, params.getString("url"));
 
-              i.setPackage("com.kakao.story");
-              cordova.getActivity().startActivity(i);
+                            i.setPackage("com.kakao.story");
+                            cordova.getActivity().startActivity(i);
 
-              callbackContext.success("success");
-            } else {
-              callbackContext.error("empty params");
-            }
+                            callbackContext.success("success");
+                        } else {
+                            callbackContext.error("empty params");
+                        }
+                    } catch (Exception ex) {
+                        callbackContext.error(ex.getMessage());
+                    }
+                }
+            });
+
             return true;
-          } catch (Exception ex) {
-            callbackContext.error(ex.getMessage());
-            return false;
-          }
         }
         return false;
     }
 
     /**
      * KakaoLink v2 지원용 method
-     * @param options - kakaolink javascript sdk 에 정의된 payload
+     *
+     * @param options         - kakaolink javascript sdk 에 정의된 payload
      * @param callbackContext
      * @throws JSONException
      */
@@ -166,27 +176,27 @@ public class KakaoTalk extends CordovaPlugin {
                 parseLinkObject(content.getJSONObject("link"))
         ).setDescrption(content.optString("description", null));
 
-        if(content.has("imageWidth"))
+        if (content.has("imageWidth"))
             contentObjectBuilder.setImageWidth(content.getInt("imageWidth"));
-        if(content.has("imageHeight"))
+        if (content.has("imageHeight"))
             contentObjectBuilder.setImageHeight(content.getInt("imageHeight"));
 
         final ContentObject contentObject = contentObjectBuilder.build();
         final TemplateParams params;
 
         // TODO : 일단 Feed Template 만 지원
-        if("feed".equals(parameters.optString("objectType"))) {
+        if ("feed".equals(parameters.optString("objectType"))) {
             FeedTemplate.Builder paramsBuilder = FeedTemplate.newBuilder(contentObject);
 
             // button 설정 부분은 javascript sdk 설명대로 구현한다.
             // buttons 가 buttonTitle 에 우선
-            if(parameters.has("buttons")) {
+            if (parameters.has("buttons")) {
                 JSONArray buttons = parameters.getJSONArray("buttons");
-                for(int i = 0; i < buttons.length(); i++) {
+                for (int i = 0; i < buttons.length(); i++) {
                     JSONObject button = buttons.getJSONObject(i);
                     paramsBuilder.addButton(new ButtonObject(button.getString("title"), parseLinkObject(button.getJSONObject("link"))));
                 }
-            } else if(parameters.has("buttonTitle")) {
+            } else if (parameters.has("buttonTitle")) {
                 // 기본 버튼
                 paramsBuilder.addButton(new ButtonObject(parameters.getString("buttonTitle"), contentObject.getLink()));
             }
@@ -336,7 +346,7 @@ public class KakaoTalk extends CordovaPlugin {
         cordova.getThreadPool().execute(new Runnable() {
             @Override
             public void run() {
-                Session.getCurrentSession().open(AuthType.KAKAO_TALK, currentActivity);
+                Session.getCurrentSession().open(AuthType.KAKAO_TALK, cordova.getActivity());
             }
         });
     }
@@ -443,25 +453,15 @@ public class KakaoTalk extends CordovaPlugin {
         }
     }
 
-
-    /**
-     * Return current activity
-     */
-    public static Activity getCurrentActivity() {
-        return currentActivity;
-    }
-
-    /**
-     * Set current activity
-     */
-    public static void setCurrentActivity(Activity currentActivity) {
-        currentActivity = currentActivity;
-    }
-
     /**
      * Class KakaoSDKAdapter
      */
     private static class KakaoSDKAdapter extends KakaoAdapter {
+        private Context context;
+
+        public KakaoSDKAdapter(Context context) {
+            this.context = context;
+        }
 
         @Override
         public ISessionConfig getSessionConfig() {
@@ -498,10 +498,10 @@ public class KakaoTalk extends CordovaPlugin {
             return new IApplicationConfig() {
                 @Override
                 public Context getApplicationContext() {
-                    return KakaoTalk.getCurrentActivity().getApplicationContext();
+                    return context;
                 }
             };
         }
     }
-
 }
+
