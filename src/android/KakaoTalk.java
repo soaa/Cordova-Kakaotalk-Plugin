@@ -51,7 +51,6 @@ import java.util.List;
 public class KakaoTalk extends CordovaPlugin {
 
     private static final String LOG_TAG = "KakaoTalk";
-    private SessionCallback callback;
 
     /**
      * Initialize cordova plugin kakaotalk
@@ -83,7 +82,10 @@ public class KakaoTalk extends CordovaPlugin {
             }
         }
 
+        cordova.setActivityResultCallback(this);
+
         if (action.equals("login")) {
+            Session.getCurrentSession().addCallback(new SessionCallback(callbackContext));
             this.login();
             //requestMe(callbackContext);
             return true;
@@ -450,6 +452,7 @@ public class KakaoTalk extends CordovaPlugin {
             if (exception != null) {
                 Log.v(LOG_TAG, "kakao : onSessionOpenFailed" + exception.toString());
             }
+            callbackContext.error(exception.getMessage());
         }
     }
 
@@ -504,4 +507,3 @@ public class KakaoTalk extends CordovaPlugin {
         }
     }
 }
-
