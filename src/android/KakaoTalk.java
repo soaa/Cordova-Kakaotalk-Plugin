@@ -445,6 +445,8 @@ public class KakaoTalk extends CordovaPlugin {
                     callbackContext.error("this user is not signed up");
                 }
             });
+
+            Session.getCurrentSession().removeCallback(this);
         }
 
         @Override
@@ -453,6 +455,8 @@ public class KakaoTalk extends CordovaPlugin {
                 Log.v(LOG_TAG, "kakao : onSessionOpenFailed" + exception.toString());
             }
             callbackContext.error(exception.getMessage());
+
+            Session.getCurrentSession().removeCallback(this);
         }
     }
 
