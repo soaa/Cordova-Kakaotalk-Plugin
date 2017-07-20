@@ -20,6 +20,31 @@ import UIKit
         }
     }
     
+    @objc(canShareViaStory:) func canShareViaStory(command: CDVInvokedUrlCommand) {
+        if(StoryLinkHelper.canOpenStoryLink()) {
+            self.commandDelegate.send(CDVPluginResult(status: CDVCommandStatus_OK, messageAs: 1), callbackId: command.callbackId)
+        } else {
+            self.commandDelegate.send(CDVPluginResult(status: CDVCommandStatus_ERROR), callbackId: command.callbackId)
+        }
+    }
+    
+    @objc(shareViaStory:) func shareViaStory(command: CDVInvokedUrlCommand) {
+        var result: CDVPluginResult?
+        
+        if let options = command.arguments.first as? Dictionary<String, AnyObject> {
+            let url = options["url"] as? String
+            let text = options["text"] as? String
+            
+            StoryLinkHelper.openStoryLink("\(text ?? "") \(url ?? "")", appBundleId: Bundle.main.object(forInfoDictionaryKey: "CFBundleIdentifier") as! String, appVersion: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String, appName: Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as! String, scrapInfo: nil)
+            result = CDVPluginResult(status: CDVCommandStatus_OK)
+            
+        } else {
+            result = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAs: "invalid parameter")
+        }
+        
+        self.commandDelegate.send(result, callbackId: command.callbackId)
+    }
+    
     @objc(login:) func login(command: CDVInvokedUrlCommand) {
         let session:KOSession = KOSession.shared()
         

@@ -94,6 +94,7 @@
     <framework src="src/ios/KakaoLink.framework" custom="true" />
     <framework src="src/ios/KakaoCommon.framework" custom="true" />
     <source-file src="src/ios/KakaoTalk.swift" />
+    <source-file src="src/ios/StoryLinkHelper.swift" />
     <header-file src="src/ios/KakaoTalk.h" />
     <header-file src="src/ios/KakaoTalk-Bridging-Header.h" />
 
