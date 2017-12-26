@@ -1,10 +1,10 @@
 {
-  "id": "cordova-plugin-brannpark-kakaotalk",
-  "name": "cordova-plugin-brannpark-kakaotalk",
+  "id": "cordova-plugin-kakaotalk",
+  "name": "cordova-plugin-kakaotalk",
   "version": "1.1.0",
   "description": "Cordova KakaoTalk Plugin",
   "cordova": {
-    "id": "cordova-plugin-brannpark-kakaotalk",
+    "id": "cordova-plugin-kakaotalk",
     "platforms": [
       "android",
       "ios"
@@ -22,6 +22,6 @@
     "cordova-android",
     "cordova-ios"
   ],
-  "author": "Brann Park",
+  "author": "Soaa Kim",
   "license": "MIT"
 }
