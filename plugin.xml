@@ -90,7 +90,7 @@
     </config-file>
     
     <framework src="QuartzCore.framework" />
-    <framework src="KakaoOpenSDK" src="podspec" spec="1.4.1" />
+    <framework src="KakaoOpenSDK" type="podspec" spec="1.4.1" />
     <source-file src="src/ios/KakaoTalk.swift" />
     <source-file src="src/ios/StoryLinkHelper.swift" />
     <header-file src="src/ios/KakaoTalk.h" />
