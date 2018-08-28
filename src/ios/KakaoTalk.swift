@@ -85,7 +85,7 @@ import UIKit
                     callbackId: command.callbackId)
             }
             
-        }, authParams: nil, authTypes: [NSNumber(value: KOAuthType.talk.rawValue)])
+        }, authParams: nil, authTypes: [NSNumber(value: KOAuthType.talk.rawValue), NSNumber(value: KOAuthType.account.rawValue)])
     }
     
     @objc(logout:) func logout(command: CDVInvokedUrlCommand) {
