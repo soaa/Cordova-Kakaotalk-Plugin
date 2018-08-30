@@ -54,6 +54,8 @@
 
     <framework src="src/android/kakao.gradle" custom="true" type="gradleReference" />
     <source-file src="src/android/KakaoTalk.java" target-dir="src/com/htj/plugin/kakao" />
+    <source-file src="src/android/KOAuthSelectCallback.java" target-dir="src/com/htj/plugin/kakao" />
+    <source-file src="src/android/KakaoLoginSelectDialog.java" target-dir="src/com/htj/plugin/kakao" />
   </platform>
   
   <platform name="ios">

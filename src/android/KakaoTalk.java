@@ -1,13 +1,29 @@
 package com.htj.plugin.kakao;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build;
+import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
+import com.kakao.auth.ApiResponseCallback;
 import com.kakao.auth.ApprovalType;
 import com.kakao.auth.AuthType;
 import com.kakao.auth.IApplicationConfig;
@@ -16,10 +32,6 @@ import com.kakao.auth.ISessionConfig;
 import com.kakao.auth.KakaoAdapter;
 import com.kakao.auth.KakaoSDK;
 import com.kakao.auth.Session;
-import com.kakao.kakaolink.AppActionBuilder;
-import com.kakao.kakaolink.AppActionInfoBuilder;
-import com.kakao.kakaolink.KakaoLink;
-import com.kakao.kakaolink.KakaoTalkLinkMessageBuilder;
 import com.kakao.kakaolink.v2.KakaoLinkResponse;
 import com.kakao.kakaolink.v2.KakaoLinkService;
 import com.kakao.message.template.ButtonObject;
@@ -32,6 +44,8 @@ import com.kakao.network.callback.ResponseCallback;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.kakao.usermgmt.callback.MeResponseCallback;
+import com.kakao.usermgmt.callback.MeV2ResponseCallback;
+import com.kakao.usermgmt.response.MeV2Response;
 import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.KakaoParameterException;
 import com.kakao.util.exception.KakaoException;
@@ -45,6 +59,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -86,22 +102,14 @@ public class KakaoTalk extends CordovaPlugin {
 
         if (action.equals("login")) {
             Session.getCurrentSession().addCallback(new SessionCallback(callbackContext));
-            this.login();
+            this.login(callbackContext);
             //requestMe(callbackContext);
             return true;
         } else if (action.equals("logout")) {
             this.logout(callbackContext);
             return true;
         } else if (action.equals("share")) {
-
-            try {
-                this.share(options, callbackContext);
-                return true;
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                return false;
-            }
+            return false;
         } else if (action.equals("link")) {
             // Kakao Link v2
             try {
@@ -237,121 +245,31 @@ public class KakaoTalk extends CordovaPlugin {
                 .build();
     }
 
-    private void share(JSONArray options, final CallbackContext callbackContext) throws KakaoParameterException {
-
-        try {
-            final JSONObject parameters = options.getJSONObject(0);
-
-            final Activity activity = this.cordova.getActivity();
-            final KakaoLink kakaoLink = KakaoLink.getKakaoLink(activity);
-            final KakaoTalkLinkMessageBuilder kakaoTalkLinkMessageBuilder = kakaoLink.createKakaoTalkLinkMessageBuilder();
-            cordova.getThreadPool().execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        if (parameters.has("text")) {
-                            kakaoTalkLinkMessageBuilder.addText(parameters.getString("text"));
-                        }
-                        if (parameters.has("image")) {
-                            JSONObject imageObj = parameters.getJSONObject("image");
-                            Integer imageWidth = 80;
-                            Integer imageHeight = 80;
-                            if (imageObj.has("width") && Integer.parseInt(imageObj.getString("width")) > 80) {
-                                imageWidth = Integer.parseInt(imageObj.getString("width"));
-                            }
-                            ;
-                            if (imageObj.has("height") && Integer.parseInt(imageObj.getString("height")) > 80) {
-                                imageHeight = Integer.parseInt(imageObj.getString("height"));
-                            }
-                            ;
-                            kakaoTalkLinkMessageBuilder.addImage(imageObj.getString("src"), imageWidth, imageHeight);
-                        }
-                        if (parameters.has("weblink")) {
-                            JSONObject weblinkObj = parameters.getJSONObject("weblink");
-                            if (weblinkObj.has("text") && weblinkObj.has("url")) {
-                                kakaoTalkLinkMessageBuilder.addWebLink(weblinkObj.getString("text"), weblinkObj.getString("url"));
-                            }
-                        }
-                        if (parameters.has("applink")) {
-                            JSONObject applinkObj = parameters.getJSONObject("applink");
-                            if (applinkObj.has("text") && applinkObj.has("url")) {
-                                String applinkParam = "";
-                                if (parameters.has("params")) {
-                                    JSONObject paramsObj = parameters.getJSONObject("params");
-                                    Log.v(LOG_TAG, "paramsObj : " + paramsObj);
-                                    Iterator keys = paramsObj.keys();
-                                    int i = 0;
-                                    while (keys.hasNext()) {
-                                        String key = keys.next().toString();
-                                        String paramValue = paramsObj.getString(key);
-                                        Log.v(LOG_TAG, "key : " + key);
-                                        Log.v(LOG_TAG, "paramValue : " + paramValue);
-                                        if (paramValue != "") {
-                                            i++;
-                                            if (i > 1) {
-                                                key = "&" + key;
-                                            }
-                                            applinkParam = applinkParam + key + "=" + paramValue;
-                                        }
-                                    }
-                                    ;
-                                }
-                                Log.v(LOG_TAG, "applinkParam : " + applinkParam);
-                                kakaoTalkLinkMessageBuilder.addAppButton(applinkObj.getString("text"),
-                                        new AppActionBuilder()
-                                                .addActionInfo(AppActionInfoBuilder
-                                                        .createAndroidActionInfoBuilder()
-                                                        .setExecuteParam(applinkParam)
-                                                        .setMarketParam("referrer=kakaotalklink")
-                                                        .build())
-                                                .addActionInfo(AppActionInfoBuilder
-                                                        .createiOSActionInfoBuilder()
-                                                        .setExecuteParam(applinkParam)
-                                                        .build())
-                                                .setUrl(applinkObj.getString("url"))
-                                                .build());
-                            }
-                        }
-                        ;
-                        kakaoTalkLinkMessageBuilder.build();
-                    } catch (Exception e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                        callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "Exception error : " + e));
-                        callbackContext.error("Exception error : " + e);
-                    }
-
-                    try {
-                        kakaoLink.sendMessage(kakaoTalkLinkMessageBuilder, activity);
-                        callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, "success"));
-                        callbackContext.success("success");
-                    } catch (Exception e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                        callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "Exception error : " + e));
-                        callbackContext.error("Exception error : " + e);
-                    }
-                }
-            });
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-
-    }
-
     /**
      * Log in
      */
-    private void login() {
-        cordova.getThreadPool().execute(new Runnable() {
+    private void login(final CallbackContext callbackContext) {
+        cordova.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Session.getCurrentSession().open(KAKAO_LOGIN_ALL, cordova.getActivity());
+                final KakaoLoginSelectDialog dialog = new KakaoLoginSelectDialog((Context) cordova.getActivity(), new KOAuthSelectCallback() {
+                    @Override
+                    public void onSelect(final AuthType authType) {
+                        Session.getCurrentSession().open(authType, cordova.getActivity());
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        callbackContext.error("selection canceled");
+                    }
+                });
+
+                dialog.open();
             }
         });
     }
+
+
 
     /**
      * Log out
@@ -362,7 +280,7 @@ public class KakaoTalk extends CordovaPlugin {
         cordova.getThreadPool().execute(new Runnable() {
             @Override
             public void run() {
-                UserManagement.requestLogout(new LogoutResponseCallback() {
+                UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
                     @Override
                     public void onCompleteLogout() {
                         Log.v(LOG_TAG, "kakao : onCompleteLogout");
@@ -393,7 +311,7 @@ public class KakaoTalk extends CordovaPlugin {
      *
      * @param userProfile
      */
-    private JSONObject handleResult(UserProfile userProfile) {
+    private JSONObject handleResult(MeV2Response userProfile) {
         Log.v(LOG_TAG, "kakao : handleResult");
         JSONObject response = new JSONObject();
         try {
@@ -423,26 +341,21 @@ public class KakaoTalk extends CordovaPlugin {
         @Override
         public void onSessionOpened() {
             Log.v(LOG_TAG, "kakao : SessionCallback.onSessionOpened");
-            UserManagement.requestMe(new MeResponseCallback() {
+            UserManagement.getInstance().me(new MeV2ResponseCallback() {
                 @Override
                 public void onFailure(ErrorResult errorResult) {
                     callbackContext.error("kakao : SessionCallback.onSessionOpened.requestMe.onFailure - " + errorResult);
                 }
 
                 @Override
+                public void onSuccess(MeV2Response result) {
+                    callbackContext.success(handleResult(result));
+                }
+
+                @Override
                 public void onSessionClosed(ErrorResult errorResult) {
                     Log.v(LOG_TAG, "kakao : SessionCallback.onSessionOpened.requestMe.onSessionClosed - " + errorResult);
                     Session.getCurrentSession().checkAndImplicitOpen();
-                }
-
-                @Override
-                public void onSuccess(UserProfile userProfile) {
-                    callbackContext.success(handleResult(userProfile));
-                }
-
-                @Override
-                public void onNotSignedUp() {
-                    callbackContext.error("this user is not signed up");
                 }
             });
 
@@ -475,7 +388,7 @@ public class KakaoTalk extends CordovaPlugin {
             return new ISessionConfig() {
                 @Override
                 public AuthType[] getAuthTypes() {
-                    return new AuthType[]{AuthType.KAKAO_TALK};
+                    return new AuthType[]{AuthType.KAKAO_LOGIN_ALL};
                 }
 
                 @Override
@@ -510,4 +423,5 @@ public class KakaoTalk extends CordovaPlugin {
             };
         }
     }
+
 }
